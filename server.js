@@ -39,7 +39,8 @@ const normEmail = e => String(e || '').trim().toLowerCase();
 const isEmail = e => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
 const isEnded = () => Date.now() > new Date(GIVEAWAY_END).getTime();
 const fmtEnd = () => new Date(GIVEAWAY_END).toLocaleString('en-US', { dateStyle: 'long', timeStyle: 'short', timeZone: 'America/New_York' }) + ' ET';
-const shareUrl = code => `${PUBLIC_URL}/r/${code}`;
+// the share link IS the case-study page with the referral code on it (the bridge reads ?ref= off the CF landing URL)
+const shareUrl = code => { const u = new URL(CASE_STUDY_URL); u.searchParams.set('ref', code); return u.toString(); };
 const TZ = process.env.COUNTDOWN_TZ || 'America/New_York';
 function tzParts(d) { const p = {}; new Intl.DateTimeFormat('en-US', { timeZone: TZ, hourCycle: 'h23', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', weekday: 'short', timeZoneName: 'short' }).formatToParts(d).forEach(x => { p[x.type] = x.value; }); return p; }
 function tzOffsetMs(d) { const p = tzParts(d); const asUtc = Date.UTC(+p.year, +p.month - 1, +p.day, +p.hour, +p.minute, +p.second); return asUtc - d.getTime(); }

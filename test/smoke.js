@@ -12,11 +12,11 @@ const J = async (p, o = {}) => { const r = await fetch(base + p, { redirect: 'ma
   try {
     // 1 enter
     let { r, body } = await J('/api/enter', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: JSON.stringify({ email: A }) });
-    ok(r.status === 200 && body.share_url && body.referral_code, 'enter creates entrant + share link');
+    ok(r.status === 200 && body.share_url && body.share_url.includes('free-case-study?ref=') && body.referral_code, 'enter creates entrant + case-study share link');
     const code = body.referral_code; const cookie = (r.headers.get('set-cookie') || '').split(';')[0];
     // 2 dashboard
     ({ r, body } = await J('/creator-giveaway/dashboard', { headers: { cookie } }));
-    ok(r.status === 200 && body.includes('Almost Entered') && body.includes(`/r/${code}`), 'dashboard (0 entries) shows Almost Entered + share link');
+    ok(r.status === 200 && body.includes('Almost Entered') && body.includes(`free-case-study?ref=${code}`), 'dashboard (0 entries) shows Almost Entered + case-study share link');
     ({ r } = await J('/creator-giveaway/dashboard')); ok(r.status === 302, 'dashboard without cookie redirects');
     // 3 re-enter same email -> same code
     ({ r, body } = await J('/api/enter', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: JSON.stringify({ name: 'Smoke Alpha', email: A.toUpperCase() }) }));
