@@ -70,7 +70,11 @@ function setSession(res, id) { res.setHeader('Set-Cookie', [`gw=${id}.${sign(id)
 function cookies(req) { const out = {}; (req.headers.cookie || '').split(';').forEach(p => { const i = p.indexOf('='); if (i > 0) out[p.slice(0, i).trim()] = decodeURIComponent(p.slice(i + 1).trim()); }); return out; }
 function sessionId(req) { const c = cookies(req).gw || ''; const [id, sig] = c.split('.'); if (!id || !sig) return null; return sig === sign(id) ? Number(id) : null; }
 function refCookie(res, code) { const prev = res.getHeader('Set-Cookie'); res.setHeader('Set-Cookie', [...(prev ? [].concat(prev) : []), `gw_ref=${encodeURIComponent(code)}; Path=/; Max-Age=${60 * 60 * 24 * 30}; SameSite=Lax`]); }
-function nameParts(name) { const p = String(name || '').trim().split(/\s+/); return { first: p[0] || '', lastInitial: p.length > 1 ? p[p.length - 1][0].toUpperCase() + '.' : '' }; }
+function nameParts(name, email) {
+  const p = String(name || '').trim().split(/\s+/).filter(Boolean);
+  if (!p.length) { const l = String(email || '').split('@')[0].replace(/[._+-]+/g, ' ').trim(); const w = l.split(' ')[0] || 'Someone'; return { first: w.charAt(0).toUpperCase() + w.slice(1, 12), lastInitial: '' }; }
+  return { first: p[0], lastInitial: p.length > 1 ? p[p.length - 1][0].toUpperCase() + '.' : '' };
+}
 
 // ---------- data ----------
 async function findEntrantByEmail(email) { const r = await db.q('SELECT * FROM gw_entrants WHERE email=$1', [email]); return r.rows[0] || null; }
@@ -116,13 +120,13 @@ async function recordPurchase({ order_id, email, referrer_code, product, value, 
 }
 async function leaderboard(limit = 10) {
   const r = await db.q(`
-    SELECT e.name, e.entries,
+    SELECT e.name, e.email, e.entries,
       COALESCE((SELECT count(*) FROM gw_leads l WHERE l.referrer_code=e.referral_code AND l.created_at > now() - interval '7 days'),0)::int * $2
       + COALESCE((SELECT count(*) FROM gw_purchases p WHERE p.referrer_code=e.referral_code AND p.created_at > now() - interval '7 days'),0)::int * $3 AS week_points
     FROM gw_entrants e
     ORDER BY week_points DESC, e.entries DESC, e.created_at ASC
     LIMIT $1`, [limit, POINTS.lead, POINTS.purchase]);
-  return r.rows.map(x => { const n = nameParts(x.name); return { name: `${n.first} ${n.lastInitial}`.trim() || 'New entrant', entries: x.entries, week_points: x.week_points }; });
+  return r.rows.map(x => { const n = nameParts(x.name, x.email); return { name: `${n.first} ${n.lastInitial}`.trim() || 'New entrant', entries: x.entries, week_points: x.week_points }; });
 }
 
 // ---------- pages ----------
@@ -141,7 +145,6 @@ function landingPage({ prefillEmail = '', ref = '', ended = false }) {
     ? `<div class="card ended"><h3>This giveaway has ended</h3><p>Winners are being contacted by email. Thanks to everyone who entered and shared.</p><a class="btn" href="${esc(CASE_STUDY_URL)}">Watch the free faceless brand case study →</a></div>`
     : `<form class="card form" id="enter-form" method="post" action="/api/enter" autocomplete="on">
         <input type="hidden" name="ref" value="${esc(ref)}">
-        <label>Name<input name="name" type="text" required placeholder="Your name" maxlength="80"></label>
         <label>Email<input name="email" type="email" required placeholder="you@email.com" value="${esc(prefillEmail)}" maxlength="120"></label>
         <button class="btn big" type="submit">Enter &amp; Get My Share Link</button>
         <p class="tiny muted">By entering you agree to the <a href="/creator-giveaway/rules">Official Rules</a>. We'll only email you about this giveaway.</p>
@@ -263,7 +266,7 @@ app.post('/api/enter', async (req, res) => {
     const email = normEmail(req.body.email);
     const support_coach = String(req.body.support_coach || '').trim().slice(0, 60) || null;
     const ref = String(req.body.ref || cookies(req).gw_ref || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
-    if (!name || !isEmail(email)) return res.status(400).send(layout({ title: 'Oops', body: '<section class="card"><h3>Please enter your name and a valid email.</h3><a class="btn" href="/creator-giveaway">Try again</a></section>' }));
+    if (!isEmail(email)) return res.status(400).send(layout({ title: 'Oops', body: '<section class="card"><h3>Please enter a valid email.</h3><a class="btn" href="/creator-giveaway">Try again</a></section>' }));
     let e = await findEntrantByEmail(email);
     if (e) {
       if (support_coach && !e.support_coach) await db.q('UPDATE gw_entrants SET support_coach=$1 WHERE id=$2', [support_coach, e.id]);
@@ -271,7 +274,7 @@ app.post('/api/enter', async (req, res) => {
       // entering via a friend's link counts as that friend's referral (one credit per email, shared with case-study leads)
       const lead = ref ? await recordLead({ email, name, referrer_code: ref, source: 'giveaway_page' }) : null;
       e = (lead && lead.friend) || await findEntrantByEmail(email) || await createEntrant({ name, email, support_coach, referred_by: ref || null });
-      if (e.name !== name || (support_coach && !e.support_coach)) { await db.q('UPDATE gw_entrants SET name=$1, support_coach=COALESCE(support_coach,$2) WHERE id=$3', [name, support_coach, e.id]); }
+      if ((name && e.name !== name) || (support_coach && !e.support_coach)) { await db.q('UPDATE gw_entrants SET name=COALESCE(NULLIF($1,\'\'),name), support_coach=COALESCE(support_coach,$2) WHERE id=$3', [name, support_coach, e.id]); }
     }
     setSession(res, e.id);
     if (req.headers.accept && req.headers.accept.includes('application/json')) return res.json({ ok: true, redirect: '/creator-giveaway/dashboard', referral_code: e.referral_code, share_url: shareUrl(e.referral_code) });
