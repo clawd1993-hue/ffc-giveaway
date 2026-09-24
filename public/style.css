@@ -20,3 +20,8 @@
 .foot{text-align:center;color:var(--muted);font-size:12px;padding:20px}
 .copied{background:var(--ok)!important;box-shadow:none!important}
 @media(max-width:760px){.hero,.two,.stats{grid-template-columns:1fr}.hero{padding-top:6px}.hero-img{order:-1}.copyrow{flex-direction:column}.stat b{font-size:34px}}
+
+.sub.big{font-size:22px;font-weight:600;color:var(--text);max-width:640px}
+.math{margin-bottom:20px}.mathrow{display:flex;flex-wrap:wrap;align-items:center;gap:10px}.term{background:var(--soft);border-radius:12px;padding:10px 14px;text-align:center;min-width:86px}.term b{display:block;font-size:26px;line-height:1.1;color:#4b2fd6}.term span{display:block;font-size:11px;color:var(--muted);margin-top:3px}.op{font-size:22px;font-weight:800;color:var(--muted)}.term.total{background:linear-gradient(90deg,var(--p1),var(--p2))}.term.total b,.term.total span{color:#fff}
+.share .earn{margin-top:14px}
+@media(max-width:760px){.mathrow{justify-content:center}.term{min-width:72px;padding:8px 10px}.term b{font-size:22px}}

@@ -23,7 +23,8 @@ const WINNERS_DATE = process.env.WINNERS_DATE || 'November 3rd';
 const PRIZE_NAME = process.env.PRIZE_NAME || 'MacBook Neo';
 const PRIZE_VALUE = process.env.PRIZE_VALUE || '$599';
 const COACHES = (process.env.COACHES || 'Not sure,Jessica,McKenzie,Ivana,Other').split(',').map(s => s.trim()).filter(Boolean);
-const POINTS = { lead: 1, purchase: 4 };
+const POINTS = { lead: 1, purchase: 4 }; // a buying friend = 1 (registered) + 4 (bonus) = 5 entries
+const BASE_ENTRIES = 0; // entering alone earns nothing — you have to share
 const MAIN_PRODUCT_EVENTS = new Set(['purchase']); // bridge event names that count as "bought the FFC"
 
 const app = express();
@@ -54,7 +55,7 @@ async function createEntrant({ name, email, support_coach, referred_by }) {
   for (let i = 0; i < 5; i++) {
     const code = genCode();
     try {
-      const r = await db.q('INSERT INTO gw_entrants(name,email,support_coach,referral_code,referred_by) VALUES($1,$2,$3,$4,$5) RETURNING *', [name, email, support_coach || null, code, referred_by || null]);
+      const r = await db.q('INSERT INTO gw_entrants(name,email,support_coach,referral_code,referred_by,entries) VALUES($1,$2,$3,$4,$5,$6) RETURNING *', [name, email, support_coach || null, code, referred_by || null, BASE_ENTRIES]);
       return r.rows[0];
     } catch (e) { if (!/gw_entrants_referral_code_key/.test(e.message)) throw e; }
   }
@@ -74,8 +75,9 @@ async function recordLead({ email, name, referrer_code, source }) {
   return { isNew, credited: isNew && !!ref && ref.email !== email, referrer: ref, friend };
 }
 // A friend bought the FFC. +4 to the referrer, once per order; referrer = ref on the order, else the ref stored on their lead.
-async function recordPurchase({ order_id, email, referrer_code, product, value }) {
+async function recordPurchase({ order_id, email, referrer_code, product, value, name }) {
   let ref = await findEntrantByCode(referrer_code);
+  if (ref && ref.email !== email) await recordLead({ email, name, referrer_code: ref.referral_code, source: 'purchase' }); // no-op if already a lead
   if (!ref) { const l = await db.q('SELECT referrer_code FROM gw_leads WHERE email=$1', [email]); if (l.rows[0]?.referrer_code) ref = await findEntrantByCode(l.rows[0].referrer_code); }
   if (!ref) { const e = await findEntrantByEmail(email); if (e?.referred_by) ref = await findEntrantByCode(e.referred_by); }
   const ins = await db.q('INSERT INTO gw_purchases(order_id,email,referrer_code,product,value) VALUES($1,$2,$3,$4,$5) ON CONFLICT (order_id) DO NOTHING RETURNING id', [String(order_id), email, ref ? ref.referral_code : null, product || null, value ?? null]);
@@ -104,7 +106,7 @@ function layout({ title, body, extraHead = '' }) {
   return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>${esc(title)}</title><meta name="robots" content="noindex">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/static/style.css?v=4">${extraHead}</head><body>
+<link rel="stylesheet" href="/static/style.css?v=5">${extraHead}</head><body>
 <main class="wrap">${body}</main>
 <footer class="foot">Faceless Funnel Challenge · <a href="/creator-giveaway/rules">Official Rules</a> · No purchase necessary. Void where prohibited.</footer>
 <script src="/static/app.js?v=3"></script></body></html>`;
@@ -120,7 +122,7 @@ function landingPage({ prefillEmail = '', ref = '', ended = false }) {
         <label>Email<input name="email" type="email" required placeholder="you@email.com" value="${esc(prefillEmail)}" maxlength="120"></label>
         <label>Which support coach are you chatting with? <span class="muted">(optional)</span><select name="support_coach"><option value="">Select…</option>${coachOpts}</select></label>
         <button class="btn big" type="submit">Enter &amp; Get My Share Link</button>
-        <p class="tiny muted">By entering you agree to the <a href="/creator-giveaway/rules">Official Rules</a>. One entry per person. We'll only email you about this giveaway.</p>
+        <p class="tiny muted">By entering you agree to the <a href="/creator-giveaway/rules">Official Rules</a>. We'll only email you about this giveaway.</p>
       </form>`;
   const body = `
   <section class="hero">
@@ -137,11 +139,11 @@ function landingPage({ prefillEmail = '', ref = '', ended = false }) {
     <div class="how">
       <h3>How it works</h3>
       <ol>
-        <li><b>Enter once</b> with your email.</li>
+        <li><b>Enter</b> with your email.</li>
         <li><b>Get a personal link</b> on the next page.</li>
-        <li><b>Every friend who registers</b> for the free case study using your link earns you more entries.</li>
+        <li><b>Share it.</b> Every friend who registers for the free case study using your link = entries for you.</li>
       </ol>
-      <div class="points"><span>+1</span> per friend who registers <span>+4</span> when a friend joins the Challenge</div>
+      <div class="points"><span>1 entry</span> per friend who registers <span>5 entries</span> per friend who joins the Challenge</div>
     </div>
   </section>
   <section class="rules">
@@ -158,46 +160,51 @@ function landingPage({ prefillEmail = '', ref = '', ended = false }) {
 
 function dashboardPage({ e, board, ended }) {
   const link = shareUrl(e.referral_code);
+  const registered = Math.max(0, e.referral_count - e.buyer_count); // friends who registered but haven't joined yet
+  const joined = e.buyer_count;
+  const total = e.entries;
+  const hasEntries = total > 0;
   const dm = `Hey, random favor?\n\nI'm in a 10-day faceless creator challenge that shows beginners how to build a silent Instagram brand + simple digital products without being on camera.\n\nThey're giving away a ${PRIZE_NAME} this month to help someone build their setup. Every friend who registers for their free faceless brand case study gives me extra entries and you get entered too.\n\nIf you're cool with it, just drop your email here so it counts for both of us: ${link}`;
   const em = `Subject: quick favor (30 seconds)\n\nHey,\n\nI joined a 10-day faceless creator challenge — it teaches beginners how to build a faceless Instagram brand and sell simple digital products, no camera needed.\n\nThey're giving away a ${PRIZE_NAME} this month. If you register for their free faceless brand case study through my link, I get extra entries and you get entered too:\n\n${link}\n\nThanks!`;
   const rows = board.length ? board.map((b, i) => `<li><span class="rank">${i + 1}</span><span class="who">${esc(b.name)}</span><span class="pts">${b.entries} ${b.entries === 1 ? 'entry' : 'entries'}</span></li>`).join('') : '<li class="muted">Be the first on the board — share your link.</li>';
+  const head = hasEntries
+    ? `<span class="pill">✅ You're entered</span><h1>You're Entered! 🎉</h1><p class="sub big">Get more chances to win: follow the instructions below.</p>`
+    : `<span class="pill">⚡ One more step</span><h1>You're Almost Entered…<br>Last Step!</h1><p class="sub big">Share your link below. Your first friend who registers = your first entry.</p>`;
   const body = `
   <section class="dash-top">
-    <span class="pill">✅ You're in</span>
-    <h1>You're In The Creator Gear Giveaway</h1>
-    <p class="sub">Here's your live entry count and your personal share link.</p>
+    ${head}
     ${ended ? `<div class="notice">Giveaway closed, winners announced on ${esc(WINNERS_DATE)}. Entries are frozen.</div>` : ''}
-    <div class="stats">
-      <div class="stat"><b>${e.entries}</b><span>Your entries</span></div>
-      <div class="stat"><b>${e.referral_count}</b><span>Friends registered for case study</span></div>
-      <div class="stat"><b>${e.buyer_count}</b><span>Challenge buyers referred</span></div>
-    </div>
   </section>
   <section class="card share">
-    <h3>Your personal share link</h3>
+    <h3>Share your link</h3>
     <div class="copyrow"><input id="share-link" type="text" readonly value="${esc(link)}"><button class="btn" data-copy="#share-link">Copy Link</button></div>
-    <p class="muted">Anyone who registers for the free case study through this link gets entered too.</p>
+    <ul class="earn">
+      <li>Every friend who registers for the free case study through your link <b>(= 1 entry)</b></li>
+      <li>Every friend who joins the 10‑Day Faceless Creator Challenge through your link <b>(= 5 entries)</b></li>
+      <li>Everyone you bring in gets entered to win the ${esc(PRIZE_NAME)} too.</li>
+    </ul>
   </section>
-  <section class="two">
-    <div class="card">
-      <h3>How to earn more entries</h3>
-      <ul class="earn">
-        <li><b>+1 entry</b> for every friend who registers for the free faceless brand case study using your link.</li>
-        <li><b>+4 bonus entries</b> when a friend joins the 10‑Day Faceless Creator Challenge from your link.</li>
-        <li><b>Everyone you bring in</b> also gets entered to win the ${esc(PRIZE_NAME)}.</li>
-      </ul>
+  <section class="card math">
+    <h3>Your entries</h3>
+    <div class="mathrow">
+      <div class="term"><b>${registered}</b><span>friends registered</span></div><div class="op">×</div><div class="term"><b>1</b><span>entry</span></div>
+      <div class="op">+</div>
+      <div class="term"><b>${joined}</b><span>friends joined</span></div><div class="op">×</div><div class="term"><b>5</b><span>entries</span></div>
+      <div class="op">=</div>
+      <div class="term total"><b>${total}</b><span>${total === 1 ? 'entry' : 'entries'}</span></div>
     </div>
-    <div class="card board">
-      <h3>🏆 Top Referrers This Week</h3>
-      <ol class="lb">${rows}</ol>
-    </div>
+    ${hasEntries ? '' : '<p class="muted tiny">Entries update automatically the moment a friend registers.</p>'}
   </section>
   <section class="card scripts">
     <h3>Copy‑paste messages</h3>
     <label>DM script<textarea id="dm" rows="9" readonly>${esc(dm)}</textarea><button class="btn" data-copy="#dm">Copy DM</button></label>
     <label>Email script<textarea id="em" rows="10" readonly>${esc(em)}</textarea><button class="btn" data-copy="#em">Copy Email</button></label>
+  </section>
+  <section class="card board">
+    <h3>🏆 Top Referrers This Week</h3>
+    <ol class="lb">${rows}</ol>
   </section>`;
-  return layout({ title: 'Your entries — Creator Gear Giveaway', body });
+  return layout({ title: hasEntries ? "You're entered — Creator Gear Giveaway" : 'Last step — Creator Gear Giveaway', body });
 }
 
 function rulesPage() {
@@ -205,8 +212,8 @@ function rulesPage() {
   <p><b>Sponsor:</b> Faceless Funnel Challenge. <b>No purchase necessary to enter or win.</b> A purchase does not increase your chances of winning beyond the bonus entries described below, which are also available by other means (see Alternate Entry).</p>
   <p><b>Eligibility:</b> Open to individuals 18+ where permitted by law. Void where prohibited. Employees and contractors of the Sponsor are not eligible.</p>
   <p><b>Period:</b> Ends ${esc(fmtEnd())}. Winners announced ${esc(WINNERS_DATE)} and contacted by email.</p>
-  <p><b>How to enter:</b> Submit the entry form (1 entry). Earn +1 entry for each friend who registers for the free faceless brand case study through your personal link, and +4 bonus entries when a referred friend joins the 10‑Day Faceless Creator Challenge. One base entry per person; referral credits are counted once per unique friend.</p>
-  <p><b>Alternate entry:</b> Email support@facelessfunnelchallenge.com with subject "Giveaway entry" and your name to receive one entry without any purchase or referral.</p>
+  <p><b>How to enter:</b> Submit the entry form to receive your personal link. You earn 1 entry for each friend who registers for the free faceless brand case study through your link, and 5 entries in total for each friend who joins the 10‑Day Faceless Creator Challenge through your link. Referral credits are counted once per unique friend.</p>
+  <p><b>Alternate entry:</b> Email support@facelessfunnelchallenge.com with subject "Giveaway entry" and your name to receive one entry without any purchase or referral. Referral entries are available free of charge by sharing your link.</p>
   <p><b>Prizes:</b> One (1) ${esc(PRIZE_NAME)} (approx. retail value ${esc(PRIZE_VALUE)}). Multiple $1,000 implementation scholarships toward the Elite program (non‑transferable, no cash value). Sponsor may substitute a prize of equal or greater value.</p>
   <p><b>Winner selection:</b> Random drawing weighted by valid entries. Winners must respond within 7 days or an alternate is drawn.</p>
   <p><b>General:</b> Entries generated by scripts, fake accounts or self‑referrals are void. Sponsor's decisions are final. This promotion is not sponsored, endorsed, administered by, or associated with Instagram, Meta or Apple.</p>
@@ -292,7 +299,7 @@ app.post('/api/hooks/cf', async (req, res) => {
     if (b.type === 'purchase') {
       if (b.event && !MAIN_PRODUCT_EVENTS.has(b.event)) return res.json({ ok: true, ignored: `event ${b.event}` });
       if (!b.order_id) return res.json({ ok: true, ignored: 'no_order_id' });
-      const r = await recordPurchase({ order_id: b.order_id, email, referrer_code: ref, product: b.product, value: b.value });
+      const r = await recordPurchase({ order_id: b.order_id, email, referrer_code: ref, product: b.product, value: b.value, name });
       return res.json({ ok: true, type: 'purchase', new: r.isNew, credited: r.credited, referrer: r.referrer?.referral_code || null });
     }
     res.json({ ok: true, ignored: 'unknown type' });

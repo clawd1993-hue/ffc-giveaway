@@ -43,6 +43,7 @@ CREATE TABLE IF NOT EXISTS gw_clicks (
   user_agent    TEXT,
   created_at    TIMESTAMPTZ NOT NULL DEFAULT now()
 );
+ALTER TABLE gw_entrants ALTER COLUMN entries SET DEFAULT 0;
 CREATE INDEX IF NOT EXISTS gw_leads_ref_idx ON gw_leads(referrer_code);
 CREATE INDEX IF NOT EXISTS gw_purchases_ref_idx ON gw_purchases(referrer_code);
 CREATE INDEX IF NOT EXISTS gw_purchases_email_idx ON gw_purchases(email);

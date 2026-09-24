@@ -16,7 +16,7 @@ const J = async (p, o = {}) => { const r = await fetch(base + p, { redirect: 'ma
     const code = body.referral_code; const cookie = (r.headers.get('set-cookie') || '').split(';')[0];
     // 2 dashboard
     ({ r, body } = await J('/creator-giveaway/dashboard', { headers: { cookie } }));
-    ok(r.status === 200 && body.includes('Your entries') && body.includes(`/r/${code}`), 'dashboard renders with session cookie');
+    ok(r.status === 200 && body.includes('Almost Entered') && body.includes(`/r/${code}`), 'dashboard (0 entries) shows Almost Entered + share link');
     ({ r } = await J('/creator-giveaway/dashboard')); ok(r.status === 302, 'dashboard without cookie redirects');
     // 3 re-enter same email -> same code
     ({ r, body } = await J('/api/enter', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: JSON.stringify({ name: 'Smoke Alpha', email: A.toUpperCase() }) }));
@@ -40,9 +40,9 @@ const J = async (p, o = {}) => { const r = await fetch(base + p, { redirect: 'ma
     ok(body.ignored, 'upsell products ignored');
     // 7 totals
     ({ body } = await J(`/admin/entrant?token=testadmin&email=${A}`));
-    ok(body.entrant.entries === 6 && body.entrant.referral_count === 1 && body.entrant.buyer_count === 1, `entrant totals = 1 base +1 lead +4 buyer (got ${body.entrant.entries})`);
+    ok(body.entrant.entries === 5 && body.entrant.referral_count === 1 && body.entrant.buyer_count === 1, `entrant totals = 0 base +1 lead +4 buyer = 5 (got ${body.entrant.entries})`);
     // 8 friend got their own entry + self-referral blocked
-    ({ body } = await J(`/admin/entrant?token=testadmin&email=${B}`)); ok(body.entrant && body.entrant.entries === 1 && body.entrant.referred_by === code, 'referred friend is entered with 1 entry');
+    ({ body } = await J(`/admin/entrant?token=testadmin&email=${B}`)); ok(body.entrant && body.entrant.entries === 0 && body.entrant.referred_by === code, 'referred friend is entered with 0 entries (must share)');
     ({ body } = await J('/api/hooks/cf', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-hook-secret': 'testsecret' }, body: JSON.stringify({ type: 'lead', email: A, ref: code }) }));
     ok(body.credited === false, 'self-referral not credited');
     // 9 leaderboard + rules + landing + ended
@@ -50,6 +50,7 @@ const J = async (p, o = {}) => { const r = await fetch(base + p, { redirect: 'ma
     ({ r, body } = await J('/creator-giveaway?email=' + C)); ok(r.status === 200 && body.includes(`value="${C}"`), 'landing prefills email');
     ({ r } = await J('/creator-giveaway/rules')); ok(r.status === 200, 'rules page');
     ({ body } = await J('/admin/draw?token=testadmin')); ok(body.winner && body.total_entries > 0, 'weighted draw returns a winner');
+    ({ r, body } = await J('/creator-giveaway/dashboard', { headers: { cookie } })); ok(body.includes("You're Entered") && body.includes('friends joined'), 'dashboard (with entries) shows Entered + math bubble');
   } finally {
     await db.q('DELETE FROM gw_clicks WHERE referral_code IN (SELECT referral_code FROM gw_entrants WHERE email LIKE $1)', [`smoke-%-${T}@example.com`]);
     await db.q('DELETE FROM gw_purchases WHERE email LIKE $1', [`smoke-%-${T}@example.com`]);
