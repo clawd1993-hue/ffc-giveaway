@@ -134,7 +134,7 @@ function layout({ title, body, extraHead = '' }) {
   return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>${esc(title)}</title><meta name="robots" content="noindex">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/static/style.css?v=6">${extraHead}</head><body>
+<link rel="stylesheet" href="/static/style.css?v=7">${extraHead}</head><body>
 <main class="wrap">${body}</main>
 <footer class="foot">Faceless Funnel Challenge · <a href="/creator-giveaway/rules">Official Rules</a> · No purchase necessary. Void where prohibited.</footer>
 <script src="/static/app.js?v=4"></script></body></html>`;
@@ -201,15 +201,6 @@ function dashboardPage({ e, board, ended }) {
     ${head}
     ${ended ? `<div class="notice">Giveaway closed, winners announced on ${esc(WINNERS_DATE)}. Entries are frozen.</div>` : ''}
   </section>
-  <section class="card share">
-    <h3>Share your link</h3>
-    <div class="copyrow"><input id="share-link" type="text" readonly value="${esc(link)}"><button class="btn" data-copy="#share-link">Copy Link</button></div>
-    <ul class="earn">
-      <li>Every friend who registers for the free case study through your link <b>(= 1 entry)</b></li>
-      <li>Every friend who joins the 10‑Day Faceless Creator Challenge through your link <b>(= 5 entries)</b></li>
-      <li>Everyone you bring in gets entered to win the ${esc(PRIZE_NAME)} too.</li>
-    </ul>
-  </section>
   <section class="card math">
     <h3>Your entries</h3>
     <div class="mathrow">
@@ -221,10 +212,20 @@ function dashboardPage({ e, board, ended }) {
     </div>
     ${hasEntries ? '' : '<p class="muted tiny">Entries update automatically the moment a friend registers.</p>'}
   </section>
+  <section class="card share">
+    <h3>Share your link</h3>
+    <ul class="earn">
+      <li>Every friend who registers for the free case study through your link <b>(= 1 entry)</b></li>
+      <li>Every friend who joins the 10‑Day Faceless Creator Challenge through your link <b>(= 5 entries)</b></li>
+      <li>Everyone you bring in gets entered to win the ${esc(PRIZE_NAME)} too.</li>
+    </ul>
+  </section>
   <section class="card scripts">
-    <h3>Copy‑paste messages</h3>
-    <label>DM script<textarea id="dm" rows="9" readonly>${esc(dm)}</textarea><button class="btn" data-copy="#dm">Copy DM</button></label>
-    <label>Email script<textarea id="em" rows="10" readonly>${esc(em)}</textarea><button class="btn" data-copy="#em">Copy Email</button></label>
+    <h3>Just copy &amp; paste the message below to share with your friends and family</h3>
+    <p class="muted">Your personal link is already inside it. You'll <b>both</b> be entered to win the ${esc(PRIZE_NAME)}!</p>
+    <label>DM / text message<textarea id="dm" rows="9" readonly>${esc(dm)}</textarea><button class="btn" data-copy="#dm">Copy Message</button></label>
+    <label>Email version<textarea id="em" rows="10" readonly>${esc(em)}</textarea><button class="btn" data-copy="#em">Copy Email</button></label>
+    <p class="tiny muted">Just want the link? <span class="mono" id="share-link-text">${esc(link)}</span> <button class="linkbtn" data-copy="#share-link-text">copy</button></p>
   </section>
   <section class="card board">
     <h3>🏆 Top Referrers This Week</h3>
