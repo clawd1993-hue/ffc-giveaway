@@ -192,7 +192,6 @@ function dashboardPage({ e, board, ended }) {
   const total = e.entries;
   const hasEntries = total > 0;
   const dm = `Hey, random favor?\n\nI'm in a 10-day faceless creator challenge that shows beginners how to build a silent Instagram brand + simple digital products without being on camera.\n\nThey're giving away a ${PRIZE_NAME} this month to help someone build their setup. Every friend who registers for their free faceless brand case study gives me extra entries and you get entered too.\n\nIf you're cool with it, just drop your email here so it counts for both of us: ${link}`;
-  const em = `Subject: quick favor (30 seconds)\n\nHey,\n\nI joined a 10-day faceless creator challenge — it teaches beginners how to build a faceless Instagram brand and sell simple digital products, no camera needed.\n\nThey're giving away a ${PRIZE_NAME} this month. If you register for their free faceless brand case study through my link, I get extra entries and you get entered too:\n\n${link}\n\nThanks!`;
   const rows = board.length ? board.map((b, i) => `<li><span class="rank">${i + 1}</span><span class="who">${esc(b.name)}</span><span class="pts">${b.entries} ${b.entries === 1 ? 'entry' : 'entries'}</span></li>`).join('') : '<li class="muted">Be the first on the board — share your link.</li>';
   const head = hasEntries
     ? `<span class="pill">✅ You're entered</span><h1>You're Entered! 🎉</h1><p class="sub big">Get more chances to win: follow the instructions below.</p>`
@@ -224,8 +223,7 @@ function dashboardPage({ e, board, ended }) {
   <section class="card scripts">
     <h3>Just copy &amp; paste the message below to share with your friends and family</h3>
     <p class="muted">✅ Your personal link <span class="mono">${esc(link)}</span> is already inside the message. You'll <b>both</b> be entered to win the ${esc(PRIZE_NAME)}!</p>
-    <label>DM / text message<textarea id="dm" rows="9" readonly>${esc(dm)}</textarea><button class="btn" data-copy="#dm">Copy Message</button></label>
-    <label>Email version<textarea id="em" rows="10" readonly>${esc(em)}</textarea><button class="btn" data-copy="#em">Copy Email</button></label>
+    <label><textarea id="dm" rows="9" readonly>${esc(dm)}</textarea><button class="btn" data-copy="#dm">Copy Message</button></label>
     <p class="tiny muted">Just want the link? <span class="mono" id="share-link-text">${esc(link)}</span> <button class="linkbtn" data-copy="#share-link-text">copy</button></p>
   </section>
   <section class="card board">
