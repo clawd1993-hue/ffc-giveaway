@@ -28,8 +28,8 @@ const BASE_ENTRIES = 0; // entering alone earns nothing — you have to share
 const MAIN_PRODUCT_EVENTS = new Set(['purchase']);
 // Display-only leaderboard seeds (social proof). Never stored, never in the draw, never in admin totals.
 let SEED_BOARD = [
-  { label: 'd***a@gmail.com', entries: 31 }, { label: 'm***s@yahoo.com', entries: 26 }, { label: 'k***r@outlook.com', entries: 21 },
-  { label: 't***e@icloud.com', entries: 17 }, { label: 'a***n@hotmail.com', entries: 12 },
+  { label: 'd***a@gmail.com', entries: 32 }, { label: 'm***s@yahoo.com', entries: 27 }, { label: 'k***r@outlook.com', entries: 21 },
+  { label: 't***e@icloud.com', entries: 16 }, { label: 'a***n@hotmail.com', entries: 11 },
 ];
 try { if (process.env.SEED_BOARD) SEED_BOARD = JSON.parse(process.env.SEED_BOARD); } catch { console.error('bad SEED_BOARD json, using defaults'); }
 function maskEmail(e) { const [l, d] = String(e || '').split('@'); if (!d) return 'someone'; const a = l.charAt(0), z = l.length > 1 ? l.charAt(l.length - 1) : ''; return `${a}***${z}@${d}`; } // bridge event names that count as "bought the FFC"
