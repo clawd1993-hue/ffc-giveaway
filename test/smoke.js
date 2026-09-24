@@ -46,7 +46,7 @@ const J = async (p, o = {}) => { const r = await fetch(base + p, { redirect: 'ma
     ({ body } = await J('/api/hooks/cf', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-hook-secret': 'testsecret' }, body: JSON.stringify({ type: 'lead', email: A, ref: code }) }));
     ok(body.credited === false, 'self-referral not credited');
     // 9 leaderboard + rules + landing + ended
-    ({ body } = await J('/api/leaderboard')); ok(Array.isArray(body) && body.some(x => x.name.startsWith('Smoke')), 'leaderboard shows a display name derived from email when no name given');
+    ({ body } = await J('/api/leaderboard')); ok(Array.isArray(body) && body.some(x => x.name === 's***' + A.split('@')[0].slice(-1) + '@example.com') && body.length >= 5, 'leaderboard shows masked email for real entrant + seeds');
     ({ r, body } = await J('/creator-giveaway?email=' + C)); ok(r.status === 200 && body.includes(`value="${C}"`), 'landing prefills email');
     ({ r } = await J('/creator-giveaway/rules')); ok(r.status === 200, 'rules page');
     ({ body } = await J('/admin/draw?token=testadmin')); ok(body.winner && body.total_entries > 0, 'weighted draw returns a winner');

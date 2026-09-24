@@ -25,7 +25,14 @@ const PRIZE_VALUE = process.env.PRIZE_VALUE || '$599';
 const COACHES = (process.env.COACHES || 'Not sure,Jessica,McKenzie,Ivana,Other').split(',').map(s => s.trim()).filter(Boolean);
 const POINTS = { lead: 1, purchase: 4 }; // a buying friend = 1 (registered) + 4 (bonus) = 5 entries
 const BASE_ENTRIES = 0; // entering alone earns nothing — you have to share
-const MAIN_PRODUCT_EVENTS = new Set(['purchase']); // bridge event names that count as "bought the FFC"
+const MAIN_PRODUCT_EVENTS = new Set(['purchase']);
+// Display-only leaderboard seeds (social proof). Never stored, never in the draw, never in admin totals.
+let SEED_BOARD = [
+  { label: 'd***a@gmail.com', entries: 31 }, { label: 'm***s@yahoo.com', entries: 26 }, { label: 'k***r@outlook.com', entries: 21 },
+  { label: 't***e@icloud.com', entries: 17 }, { label: 'a***n@hotmail.com', entries: 12 },
+];
+try { if (process.env.SEED_BOARD) SEED_BOARD = JSON.parse(process.env.SEED_BOARD); } catch { console.error('bad SEED_BOARD json, using defaults'); }
+function maskEmail(e) { const [l, d] = String(e || '').split('@'); if (!d) return 'someone'; const a = l.charAt(0), z = l.length > 1 ? l.charAt(l.length - 1) : ''; return `${a}***${z}@${d}`; } // bridge event names that count as "bought the FFC"
 
 const app = express();
 app.set('trust proxy', true);
@@ -127,7 +134,9 @@ async function leaderboard(limit = 10) {
     FROM gw_entrants e
     ORDER BY week_points DESC, e.entries DESC, e.created_at ASC
     LIMIT $1`, [limit, POINTS.lead, POINTS.purchase]);
-  return r.rows.map(x => { const n = nameParts(x.name, x.email); return { name: `${n.first} ${n.lastInitial}`.trim() || 'New entrant', entries: x.entries, week_points: x.week_points }; });
+  const real = r.rows.filter(x => x.entries > 0).map(x => ({ name: maskEmail(x.email), entries: x.entries, week_points: x.week_points, real: true }));
+  const seeds = SEED_BOARD.map(x => ({ name: x.label, entries: x.entries, week_points: x.entries, real: false }));
+  return [...real, ...seeds].sort((a, b) => (b.week_points - a.week_points) || (b.entries - a.entries) || (a.real ? -1 : 1)).slice(0, limit);
 }
 
 // ---------- pages ----------
