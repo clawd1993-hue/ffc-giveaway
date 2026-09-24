@@ -70,7 +70,7 @@ async function recordLead({ email, name, referrer_code, source }) {
   }
   // the friend is entered too (1 base entry) so they get their own link
   let friend = await findEntrantByEmail(email);
-  if (!friend && isNew) friend = await createEntrant({ name: name || email.split('@')[0], email, referred_by: ref ? ref.referral_code : null });
+  if (!friend && isNew) friend = await createEntrant({ name: name || '', email, referred_by: ref ? ref.referral_code : null });
   return { isNew, credited: isNew && !!ref && ref.email !== email, referrer: ref, friend };
 }
 // A friend bought the FFC. +4 to the referrer, once per order; referrer = ref on the order, else the ref stored on their lead.
@@ -96,7 +96,7 @@ async function leaderboard(limit = 10) {
     FROM gw_entrants e
     ORDER BY week_points DESC, e.entries DESC, e.created_at ASC
     LIMIT $1`, [limit, POINTS.lead, POINTS.purchase]);
-  return r.rows.map(x => { const n = nameParts(x.name); return { name: `${n.first} ${n.lastInitial}`.trim(), entries: x.entries, week_points: x.week_points }; });
+  return r.rows.map(x => { const n = nameParts(x.name); return { name: `${n.first} ${n.lastInitial}`.trim() || 'New entrant', entries: x.entries, week_points: x.week_points }; });
 }
 
 // ---------- pages ----------
