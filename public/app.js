@@ -35,3 +35,6 @@ if (cd) {
   };
   tick(); const t = setInterval(tick, 1000);
 }
+
+// auto-size the script textareas so the whole message (incl. the link at the end) is visible without scrolling
+document.querySelectorAll('.scripts textarea').forEach(t => { const fit = () => { t.style.height = 'auto'; t.style.height = (t.scrollHeight + 4) + 'px'; }; fit(); window.addEventListener('resize', fit); });

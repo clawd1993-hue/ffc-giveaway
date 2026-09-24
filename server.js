@@ -137,7 +137,7 @@ function layout({ title, body, extraHead = '' }) {
 <link rel="stylesheet" href="/static/style.css?v=7">${extraHead}</head><body>
 <main class="wrap">${body}</main>
 <footer class="foot">Faceless Funnel Challenge · <a href="/creator-giveaway/rules">Official Rules</a> · No purchase necessary. Void where prohibited.</footer>
-<script src="/static/app.js?v=4"></script></body></html>`;
+<script src="/static/app.js?v=5"></script></body></html>`;
 }
 
 function landingPage({ prefillEmail = '', ref = '', ended = false }) {
@@ -222,7 +222,7 @@ function dashboardPage({ e, board, ended }) {
   </section>
   <section class="card scripts">
     <h3>Just copy &amp; paste the message below to share with your friends and family</h3>
-    <p class="muted">Your personal link is already inside it. You'll <b>both</b> be entered to win the ${esc(PRIZE_NAME)}!</p>
+    <p class="muted">✅ Your personal link <span class="mono">${esc(link)}</span> is already inside the message. You'll <b>both</b> be entered to win the ${esc(PRIZE_NAME)}!</p>
     <label>DM / text message<textarea id="dm" rows="9" readonly>${esc(dm)}</textarea><button class="btn" data-copy="#dm">Copy Message</button></label>
     <label>Email version<textarea id="em" rows="10" readonly>${esc(em)}</textarea><button class="btn" data-copy="#em">Copy Email</button></label>
     <p class="tiny muted">Just want the link? <span class="mono" id="share-link-text">${esc(link)}</span> <button class="linkbtn" data-copy="#share-link-text">copy</button></p>
