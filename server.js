@@ -144,7 +144,7 @@ function layout({ title, body, extraHead = '' }) {
   return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>${esc(title)}</title><meta name="robots" content="noindex">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/static/style.css?v=7">${extraHead}</head><body>
+<link rel="stylesheet" href="/static/style.css?v=8">${extraHead}</head><body>
 <main class="wrap">${body}</main>
 <footer class="foot">Faceless Funnel Challenge · <a href="/creator-giveaway/rules">Official Rules</a> · No purchase necessary. Void where prohibited.</footer>
 <script src="/static/app.js?v=5"></script></body></html>`;
