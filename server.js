@@ -130,7 +130,7 @@ function landingPage({ prefillEmail = '', ref = '', ended = false }) {
       <p class="sub">You're in the 10‑Day Faceless Creator Challenge. Enter the Creator Gear Giveaway and earn extra entries for every friend who registers for the free faceless brand case study.</p>
       <a class="btn big" href="#enter">Enter &amp; Get My Share Link</a>
     </div>
-    <div class="hero-img"><img src="/static/img/macbook.png" alt="${esc(PRIZE_NAME)}" width="640" height="480"><span class="tag">${esc(PRIZE_VALUE)} value</span></div>
+    <div class="hero-img"><img src="/static/img/macbook.jpg" alt="${esc(PRIZE_NAME)}" width="640" height="480"><span class="tag">${esc(PRIZE_VALUE)} value</span></div>
   </section>
   <section id="enter" class="two">
     ${formOrEnded}
