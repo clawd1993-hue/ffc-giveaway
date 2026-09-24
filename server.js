@@ -334,7 +334,13 @@ app.get('/admin/entrant', async (req, res) => {
 app.use((req, res) => res.status(404).send(layout({ title: 'Not found', body: '<section class="card"><h3>Page not found</h3><a class="btn" href="/creator-giveaway">Go to the giveaway</a></section>' })));
 
 if (require.main === module) {
-  db.init().then(() => app.listen(PORT, () => console.log(`ffc-giveaway listening on :${PORT} public=${PUBLIC_URL} ends=${GIVEAWAY_END} ended=${isEnded()}`)))
-    .catch(err => { console.error('db init failed', err); process.exit(1); });
+  // Start listening right away (health check passes), then create tables; retry if the DB is waking up (Supabase free tier pauses).
+  app.listen(PORT, () => console.log(`ffc-giveaway listening on :${PORT} public=${PUBLIC_URL} ends=${GIVEAWAY_END} ended=${isEnded()}`));
+  (async () => {
+    for (let i = 1; ; i++) {
+      try { await db.init(); console.log('db ready'); break; }
+      catch (err) { console.error(`db init failed (attempt ${i}): ${err.message}`); await new Promise(r => setTimeout(r, Math.min(60000, 5000 * i))); }
+    }
+  })();
 }
 module.exports = { app, recordLead, recordPurchase, leaderboard };
