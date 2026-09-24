@@ -25,3 +25,8 @@
 .math{margin-bottom:20px}.mathrow{display:flex;flex-wrap:wrap;align-items:center;gap:10px}.term{background:var(--soft);border-radius:12px;padding:10px 14px;text-align:center;min-width:86px}.term b{display:block;font-size:26px;line-height:1.1;color:#4b2fd6}.term span{display:block;font-size:11px;color:var(--muted);margin-top:3px}.op{font-size:22px;font-weight:800;color:var(--muted)}.term.total{background:linear-gradient(90deg,var(--p1),var(--p2))}.term.total b,.term.total span{color:#fff}
 .share .earn{margin-top:14px}
 @media(max-width:760px){.mathrow{justify-content:center}.term{min-width:72px;padding:8px 10px}.term b{font-size:22px}}
+
+.banner{background:linear-gradient(90deg,var(--p1),var(--p2));color:#fff;border-radius:18px;padding:18px 20px;margin:0 0 22px;text-align:center;box-shadow:0 12px 30px rgba(109,76,255,.28)}
+.banner-title{font-size:clamp(20px,3vw,28px);font-weight:800;letter-spacing:-.01em;margin-bottom:10px;text-transform:uppercase}
+.cd{display:flex;justify-content:center;align-items:center;gap:8px}.cd-unit{background:rgba(255,255,255,.14);border-radius:12px;padding:8px 12px;min-width:66px}.cd-unit b{display:block;font-size:clamp(26px,4vw,38px);line-height:1;font-variant-numeric:tabular-nums}.cd-unit span{display:block;font-size:11px;opacity:.85;margin-top:4px;text-transform:uppercase;letter-spacing:.04em}.cd-sep{font-size:28px;font-weight:800;opacity:.7}
+@media(max-width:760px){.cd-unit{min-width:56px;padding:6px 8px}.cd-sep{font-size:22px}}

@@ -40,6 +40,30 @@ const isEmail = e => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
 const isEnded = () => Date.now() > new Date(GIVEAWAY_END).getTime();
 const fmtEnd = () => new Date(GIVEAWAY_END).toLocaleString('en-US', { dateStyle: 'long', timeStyle: 'short', timeZone: 'America/New_York' }) + ' ET';
 const shareUrl = code => `${PUBLIC_URL}/r/${code}`;
+const TZ = process.env.COUNTDOWN_TZ || 'America/New_York';
+function tzParts(d) { const p = {}; new Intl.DateTimeFormat('en-US', { timeZone: TZ, hourCycle: 'h23', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', weekday: 'short', timeZoneName: 'short' }).formatToParts(d).forEach(x => { p[x.type] = x.value; }); return p; }
+function tzOffsetMs(d) { const p = tzParts(d); const asUtc = Date.UTC(+p.year, +p.month - 1, +p.day, +p.hour, +p.minute, +p.second); return asUtc - d.getTime(); }
+// End of the current week (Sunday 23:59:59 in TZ). If it's already past this week's end, next week's.
+function weekEnd(now = new Date()) {
+  const p = tzParts(now);
+  const wd = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].indexOf(p.weekday);
+  const daysToSun = (7 - wd) % 7;
+  let guess = new Date(Date.UTC(+p.year, +p.month - 1, +p.day + daysToSun, 23, 59, 59) - tzOffsetMs(now));
+  guess = new Date(guess.getTime() - (tzOffsetMs(guess) - tzOffsetMs(now))); // correct if DST flips before Sunday
+  guess = new Date(Math.floor(guess.getTime() / 1000) * 1000);
+  const hard = new Date(GIVEAWAY_END).getTime();
+  return new Date(Math.min(guess.getTime(), hard));
+}
+function countdownBanner() {
+  const end = weekEnd();
+  return `<section class="banner"><div class="banner-title">⏳ Giveaway Ends In</div>
+  <div class="cd" data-end="${end.toISOString()}">
+    <div class="cd-unit"><b data-u="d">0</b><span>days</span></div><div class="cd-sep">:</div>
+    <div class="cd-unit"><b data-u="h">00</b><span>hours</span></div><div class="cd-sep">:</div>
+    <div class="cd-unit"><b data-u="m">00</b><span>minutes</span></div><div class="cd-sep">:</div>
+    <div class="cd-unit"><b data-u="s">00</b><span>seconds</span></div>
+  </div></section>`;
+}
 function genCode() { return crypto.randomBytes(4).toString('base64url').replace(/[^a-zA-Z0-9]/g, '').slice(0, 6).toUpperCase() || crypto.randomBytes(3).toString('hex').toUpperCase(); }
 function sign(v) { return crypto.createHmac('sha256', SESSION_SECRET).update(String(v)).digest('base64url'); }
 function setSession(res, id) { res.setHeader('Set-Cookie', [`gw=${id}.${sign(id)}; Path=/; Max-Age=${60 * 60 * 24 * 90}; HttpOnly; SameSite=Lax${PUBLIC_URL.startsWith('https') ? '; Secure' : ''}`, ...(res.getHeader('Set-Cookie') ? [].concat(res.getHeader('Set-Cookie')) : [])]); }
@@ -106,10 +130,10 @@ function layout({ title, body, extraHead = '' }) {
   return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>${esc(title)}</title><meta name="robots" content="noindex">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/static/style.css?v=5">${extraHead}</head><body>
+<link rel="stylesheet" href="/static/style.css?v=6">${extraHead}</head><body>
 <main class="wrap">${body}</main>
 <footer class="foot">Faceless Funnel Challenge · <a href="/creator-giveaway/rules">Official Rules</a> · No purchase necessary. Void where prohibited.</footer>
-<script src="/static/app.js?v=3"></script></body></html>`;
+<script src="/static/app.js?v=4"></script></body></html>`;
 }
 
 function landingPage({ prefillEmail = '', ref = '', ended = false }) {
@@ -125,6 +149,7 @@ function landingPage({ prefillEmail = '', ref = '', ended = false }) {
         <p class="tiny muted">By entering you agree to the <a href="/creator-giveaway/rules">Official Rules</a>. We'll only email you about this giveaway.</p>
       </form>`;
   const body = `
+  ${ended ? '' : countdownBanner()}
   <section class="hero">
     <div class="hero-text">
       <span class="pill">🎁 Creator Gear Giveaway</span>
