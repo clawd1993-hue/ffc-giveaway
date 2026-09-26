@@ -1,0 +1,259 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AI Creator Challenge — How I Make $500/Day Posting AI Generated Content</title>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ===== AI CREATOR CHALLENGE — CF design kit (namespaced .aic) ===== */
+.aic,.aic *{box-sizing:border-box}
+.aic{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:#1c1c24;line-height:1.55;margin:0;width:100%;overflow-x:hidden}
+.aic h1,.aic h2,.aic h3{font-family:Anton,Impact,'Arial Narrow',sans-serif;font-weight:400;letter-spacing:.01em;line-height:1.12;margin:0 0 14px}
+.aic h2{font-size:clamp(28px,4.2vw,44px);text-align:center;color:#111}
+.aic .y{color:#f5b301} .aic .pk{color:#ff2d8a}
+.aic .wrap{max-width:900px;margin:0 auto;padding:0 20px}
+.aic section{padding:56px 0}
+.aic .center{text-align:center}
+.aic p{font-size:18px;margin:0 0 16px}
+.aic .copy{max-width:680px;margin:0 auto}
+.aic .copy p{font-size:19px}
+.aic img.full{display:block;width:100%;height:auto;margin:18px auto;max-width:860px}
+/* CTA */
+.aic-cta{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;color:#fff;background:linear-gradient(90deg,#ff2d8a 0%,#ff7a3d 55%,#ffb400 100%);border-radius:10px;padding:14px 34px;min-width:300px;box-shadow:0 10px 28px rgba(255,45,138,.35);transition:transform .15s}
+.aic-cta:hover{transform:translateY(-2px)}
+.aic-cta-main{font-family:Anton,Impact,sans-serif;font-size:24px;letter-spacing:.02em;line-height:1.1}
+.aic-cta-sub{font-size:11px;font-weight:700;letter-spacing:.08em;opacity:.95;margin-top:2px}
+.aic .ctawrap{text-align:center;margin:26px 0 0}
+/* HERO */
+.aic-hero{background:radial-gradient(1100px 600px at 50% -10%,#3b1a5c 0%,#1a0b2e 45%,#0b0618 100%);color:#fff;padding:26px 0 60px;position:relative}
+.aic-hero:before{content:"";position:absolute;inset:0;background:radial-gradient(500px 300px at 15% 70%,rgba(255,45,138,.18),transparent 60%),radial-gradient(500px 300px at 85% 30%,rgba(255,180,0,.14),transparent 60%);pointer-events:none}
+.aic-hero .wrap{position:relative}
+.aic-logo{display:flex;flex-direction:column;align-items:center;gap:2px;margin-bottom:22px}
+.aic-logo b{font-family:Anton,Impact,sans-serif;font-size:34px;letter-spacing:.06em;color:#f5b301;line-height:1}
+.aic-logo span{font-size:11px;letter-spacing:.34em;font-weight:700;color:#fff;opacity:.85}
+.aic-hero h1{font-size:clamp(30px,5vw,54px);text-align:center;color:#fff;max-width:900px;margin:0 auto 22px}
+.aic-hero h1 u{text-decoration:underline;text-underline-offset:6px}
+.aic-video{position:relative;width:100%;max-width:860px;margin:0 auto;aspect-ratio:16/9;border-radius:6px;overflow:hidden;background:#000 url('https://images.clickfunnels.com/cdn-cgi/image/width=1000px,fit=scale-down,f=auto,q=80/https://statics.myclickfunnels.com/workspace/JmNrPW/image/15857259/file/372f4bd1ee698cccb49b98789daefd39.png') center/cover;box-shadow:0 30px 60px rgba(0,0,0,.6)}
+.aic-video:after{content:"";position:absolute;inset:0;background:rgba(0,0,0,.35)}
+.aic-video .unmute{position:absolute;inset:0;margin:auto;width:min(60%,420px);height:70%;background:rgba(245,179,1,.88);border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:20px;text-align:center;z-index:2;line-height:1.5}
+.aic-video .unmute i{font-style:normal;font-size:44px;display:block;margin-bottom:6px}
+.aic-hero .coffee{text-align:center;margin-top:22px;font-size:18px} .aic-hero .coffee small{display:block;font-size:15px;opacity:.9;margin-top:2px}
+/* sections */
+.aic .alt{background:#f6f6f9}
+.aic .label{text-align:center;font-style:italic;font-weight:700;font-size:15px;margin:10px 0 0}
+/* steps */
+.aic-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:24px 0 10px}
+.aic-step{background:#fff;border:1px solid #e9e9f0;border-radius:16px;padding:22px 16px;text-align:center;box-shadow:0 8px 24px rgba(20,20,40,.06);position:relative}
+.aic-step .n{display:inline-block;background:#111;color:#f5b301;font-family:Anton,Impact,sans-serif;font-size:14px;letter-spacing:.08em;padding:4px 12px;border-radius:999px;margin-bottom:12px}
+.aic-step .ic{font-size:56px;line-height:1;margin:6px 0 12px}
+.aic-step h3{font-family:Inter,sans-serif;font-weight:800;font-size:18px;margin:0 0 6px}
+.aic-step p{font-size:14px;color:#555;margin:0}
+.aic-step:not(:last-child):after{content:"➜";position:absolute;right:-18px;top:50%;transform:translateY(-50%);color:#ff2d8a;font-size:22px}
+/* checklist */
+.aic-check{list-style:none;padding:0;margin:18px auto;max-width:520px;text-align:center}
+.aic-check li{font-size:17px;margin:8px 0} .aic-check li:before{content:"✔";color:#f5b301;font-weight:900;margin-right:10px}
+/* old vs new */
+.aic-vs{display:grid;grid-template-columns:1fr 1fr;gap:14px;max-width:760px;margin:22px auto}
+.aic-vs .col{border-radius:16px;padding:18px} .aic-vs .old{background:#fff0f3;border:1px solid #ffd1dc} .aic-vs .new{background:#f1eaff;border:1px solid #d9c8ff}
+.aic-vs h4{font-family:Anton,Impact,sans-serif;font-weight:400;font-size:22px;margin:0 0 12px;text-align:center} .aic-vs .old h4{color:#e0245e} .aic-vs .new h4{color:#6d3df5}
+.aic-vs ul{list-style:none;padding:0;margin:0} .aic-vs li{background:#fff;border-radius:10px;padding:10px 12px;margin:8px 0;font-size:15px;font-weight:600;text-align:center}
+.aic-vs .old li{color:#c8103f} .aic-vs .new li{color:#4b2fd6}
+.aic-vs .end{font-family:Anton,Impact,sans-serif;font-size:18px;text-align:center;margin-top:12px}
+/* modules */
+.aic-mods{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:22px}
+.aic-mod{background:#fff;border:1px solid #e9e9f0;border-radius:16px;padding:20px;box-shadow:0 8px 24px rgba(20,20,40,.06)}
+.aic-mod .ic{font-size:30px;margin-bottom:8px} .aic-mod b{display:block;font-size:18px;margin-bottom:6px} .aic-mod p{font-size:15px;color:#444;margin:0}
+/* numbered */
+.aic-num p{font-size:18px} .aic-num b{display:block;font-size:20px;margin-top:18px}
+/* testimonials grid */
+.aic-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:22px 0}
+.aic-grid img{width:100%;height:auto;border-radius:12px;border:1px solid #e5e5ee;background:#fff}
+/* guarantee */
+.aic-guar{display:grid;grid-template-columns:200px 1fr;gap:26px;align-items:center;max-width:820px;margin:20px auto}
+.aic-guar img{width:100%}
+/* stack */
+.aic-stack{max-width:640px;margin:22px auto;background:#fff;border:2px solid #111;border-radius:18px;padding:26px;box-shadow:0 16px 40px rgba(20,20,40,.12)}
+.aic-stack ul{list-style:none;padding:0;margin:0 0 14px} .aic-stack li{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px dashed #ddd;font-size:17px} .aic-stack li b{color:#e0245e;white-space:nowrap}
+.aic-stack .tot{display:flex;justify-content:space-between;font-weight:800;font-size:18px;padding:8px 0}
+.aic-stack .reg{text-align:center;font-size:18px;margin-top:10px} .aic-stack .reg s{color:#999}
+.aic-stack .now{font-family:Anton,Impact,sans-serif;font-size:44px;text-align:center;color:#111;margin:4px 0 0} .aic-stack .now span{color:#ff2d8a}
+.aic-stack .del{text-align:center;font-size:14px;color:#555;margin-top:6px}
+.aic-formslot{max-width:640px;margin:22px auto 0;border:2px dashed #b9b9c9;border-radius:14px;padding:26px;text-align:center;color:#7a7a90;font-weight:700;background:#fafafd}
+/* faq */
+.aic-faq{max-width:760px;margin:0 auto 10px;background:#fff;border:1px solid #e6e6ee;border-radius:12px;padding:6px 18px}
+.aic-faq summary{cursor:pointer;font-weight:700;font-size:17px;padding:12px 0;list-style:none} .aic-faq summary::-webkit-details-marker{display:none} .aic-faq summary:before{content:"+";display:inline-block;width:24px;color:#ff2d8a;font-weight:900} .aic-faq[open] summary:before{content:"–"}
+.aic-faq p{font-size:16px;color:#444;margin:0 0 14px 24px}
+/* footer */
+.aic-foot{background:#0b0618;color:#a9a3bf;font-size:12px;padding:34px 0;text-align:center;line-height:1.7} .aic-foot a{color:#fff}
+@media(max-width:760px){.aic section{padding:40px 0}.aic-steps,.aic-mods,.aic-vs{grid-template-columns:1fr}.aic-step:not(:last-child):after{content:"⬇";right:auto;left:50%;top:auto;bottom:-24px;transform:translateX(-50%)}.aic-steps{gap:30px}.aic-grid{grid-template-columns:1fr 1fr}.aic-guar{grid-template-columns:1fr;text-align:center}.aic-guar img{max-width:180px;margin:0 auto}.aic-cta{width:100%;min-width:0}.aic-cta-main{font-size:21px}.aic .copy p{font-size:17px}}
+</style></head><body style="margin:0"><div class="aic">
+
+<!-- ===== BLOCK 1 : HERO ===== -->
+<section class="aic-hero"><div class="wrap">
+  <div class="aic-logo"><b>AI CREATOR</b><span>CHALLENGE</span></div>
+  <h1>How I Make <span class="y">$500/Day</span> Posting AI Generated Content <u>(Guaranteed)</u></h1>
+  <div class="aic-video"><div class="unmute"><i>🔊</i>Your Video Is Playing<br>Click To Unmute</div></div>
+  <p class="coffee">☕ Get started for <b><u>LESS than a cup of coffee</u></b><small>(1-On-1 Chat Support Included)</small></p>
+  <div class="ctawrap"><a class="aic-cta" href="#checkout"><span class="aic-cta-main">GET ACCESS FOR JUST $6.95 &raquo;</span><span class="aic-cta-sub">1-ON-1 CHAT SUPPORT INCLUDED</span></a></div>
+</div></section>
+
+<!-- ===== BLOCK 2 : PROOF ===== -->
+<section><div class="wrap">
+  <h2>That's How I Went From<br>$0 to <span class="y"><u>$47,4K</u></span> In Just 29 Days Posting AI Content &amp; Selling A Simple Digital Product!</h2>
+  <p class="label">Screenshare from my Payment Processor ⬇</p>
+  <img class="full" src="https://images.clickfunnels.com/cdn-cgi/image/width=1000px,fit=scale-down,f=auto,q=80/https://statics.myclickfunnels.com/workspace/JmNrPW/image/15837690/file/94b4d920b3acd9daa194016ea34ad255.png" alt="payment processor screenshot">
+  <h2>...And How 2,842+ People In Our Challenge <span class="y">Are Doing The Same Thing</span></h2>
+  <img class="full" src="https://images.clickfunnels.com/cdn-cgi/image/width=1000px,fit=scale-down,f=auto,q=80/https://statics.myclickfunnels.com/workspace/JmNrPW/image/17683263/file/2b1ced876772b86b6765dae7875d3761.png" alt="student results">
+</div></section>
+
+<!-- ===== BLOCK 3 : HOW IT WORKS ===== -->
+<section class="alt"><div class="wrap">
+  <h2>If You're Looking To Make An Extra <span class="y">$1k+ Per Week</span> Then I'll Show You How To Launch Your Own AI Creator Account In The Next 10 Days</h2>
+  <p class="center" style="font-family:Anton,Impact,sans-serif;font-size:24px">...and all you have to do is copy &amp; paste my exact steps for yourself!</p>
+  <div class="aic-steps">
+    <div class="aic-step"><span class="n">STEP 1</span><div class="ic">📱</div><h3>Create a Faceless Instagram Profile</h3><p>Brand new account. No followers needed.</p></div>
+    <div class="aic-step"><span class="n">STEP 2</span><div class="ic">🤖</div><h3>Post AI-Generated Reels</h3><p>AI writes the script, makes the video and the voice. You post.</p></div>
+    <div class="aic-step"><span class="n">STEP 3</span><div class="ic">💰</div><h3>Sell (Done-For-You) Digital Products &amp; Get Paid</h3><p>Pre-built products. Keep 100% of every sale.</p></div>
+  </div>
+  <div class="copy" style="margin-top:34px">
+    <p>If you have the <b>Instagram</b> app installed on your smartphone...</p>
+    <p>Then you can use it to make <b><u>Influencer Money</u> without ever showing your face</b> (or filming a single thing).</p>
+    <p>1. Because you can create a brand-new Instagram profile…</p>
+    <p>2. Post AI-generated videos (our AI writes the script, creates the visuals and the voiceover in minutes)…</p>
+    <p>3. And sell PRE-BUILT digital products as your own!</p>
+    <p>This is not affiliate marketing, but something called “<b>Premium Digital Dropshipping</b>”: you take a digital product that is already working very well, sell it as if it were your own, and keep 100% of the sale.</p>
+  </div>
+  <img class="full" src="https://images.clickfunnels.com/cdn-cgi/image/width=1000px,fit=scale-down,f=auto,q=80/https://statics.myclickfunnels.com/workspace/JmNrPW/image/15744403/file/05500e8097d167f11fdd53ededd09dfc.png" alt="student result">
+  <p class="center" style="font-size:19px">That's how one of our students implemented this system right away and <b class="pk"><u>made $1,469.65 as a total beginner</u></b>.</p>
+</div></section>
+
+<!-- ===== BLOCK 4 : YOU CAN DO THIS ===== -->
+<section><div class="wrap">
+  <div class="copy">
+    <p><b>You can do this too!</b></p>
+    <p>Even if you’ve never made a single penny online in your life...</p>
+    <p>Or if you never posted a Reel on Instagram…</p>
+    <p>Or never touched an AI tool in your life…</p>
+    <p>Or are currently working 2 jobs at once…</p>
+    <p><b>This system can be done in your spare time.</b></p>
+    <p>Because once the system is set up…</p>
+    <p><b>It can work FOR YOU...</b></p>
+    <p>While you can relax on a nice vacation and just watch new sales flood in.</p>
+  </div>
+  <img class="full" src="https://images.clickfunnels.com/cdn-cgi/image/width=1000px,fit=scale-down,f=auto,q=80/https://statics.myclickfunnels.com/workspace/JmNrPW/image/15857090/file/6395bdb36d91e53fc9d0c0132dc2ebd8.png" alt="lifestyle" style="max-width:620px">
+  <h2>I Call It The <span class="y">AI Creator System</span> Because It Requires NO:</h2>
+  <ul class="aic-check">
+    <li>No need to show your face</li><li>No filming, no editing, no tech skills</li><li>No Instagram experience needed</li><li>No audience needed</li><li>No need to be US-based (works from anywhere)</li><li>No being tied to a computer all day</li><li>No one but yourself to report to</li>
+  </ul>
+  <p class="center" style="font-size:20px;font-weight:800">All you need is a smartphone + internet connection to get started!</p>
+  <div class="ctawrap"><a class="aic-cta" href="#checkout"><span class="aic-cta-main">GET ACCESS FOR JUST $6.95 &raquo;</span><span class="aic-cta-sub">1-ON-1 CHAT SUPPORT INCLUDED</span></a></div>
+</div></section>
+
+<!-- ===== BLOCK 5 : OLD WAY / NEW WAY ===== -->
+<section class="alt"><div class="wrap">
+  <h2>This is the Easy Way of Making Money in 2026</h2>
+  <div class="aic-vs">
+    <div class="col old"><h4>The Old Way</h4><ul><li>Build products from scratch</li><li>Spend hours filming &amp; editing</li><li>Run ads with no guidance</li><li>Feel stuck and burned out</li></ul><p class="end">😩 Frustration &amp; burnout</p></div>
+    <div class="col new"><h4>The New Way</h4><ul><li>Let AI create the content</li><li>Leverage done-for-you systems</li><li>Sell digital products &amp; earn commissions</li><li>Work 20-30 min/day with real results</li></ul><p class="end">🚀 Hit $10K working 20-30 min/day</p></div>
+  </div>
+  <div class="copy">
+    <p><b>The AI Creator System is a <u>shortcut</u>...</b></p>
+    <p>Because <b>AI creates</b> content that's designed to go viral.</p>
+    <p>Because you <b>resell</b> other people's proven products.</p>
+    <p>...And because you can skip all the Trial &amp; Error and go straight into making money!</p>
+    <p>I call this "<b>Making Consistent Profit With Confidence</b>".</p>
+    <p>This is the best way to start making money online in 2026.</p>
+  </div>
+  <img class="full" src="https://images.clickfunnels.com/cdn-cgi/image/width=1000px,fit=scale-down,f=auto,q=80/https://statics.myclickfunnels.com/workspace/JmNrPW/image/15533421/file/58e4f95e21fbdf119716414265e693fc.png" alt="20 minutes a day" style="max-width:620px">
+  <div class="ctawrap"><a class="aic-cta" href="#checkout"><span class="aic-cta-main">GET ACCESS FOR JUST $6.95 &raquo;</span><span class="aic-cta-sub">1-ON-1 CHAT SUPPORT INCLUDED</span></a></div>
+</div></section>
+
+<!-- ===== BLOCK 6 : WHY ===== -->
+<section><div class="wrap">
+  <div class="copy">
+    <p><b>I personally believe that making an extra $10-20K per month can change anyone's life...</b></p>
+    <p>Because you can provide for your family...</p><p>For your loved ones...</p><p>Go on the vacation you’ve always dreamed of...</p><p>Or buy the car you always wanted.</p>
+    <p>Because once you have this set up and running...</p><p><b>Then all the opportunities are open for you.</b></p><p>You can finally relax and enjoy what life has to offer.</p>
+  </div>
+  <img class="full" src="https://images.clickfunnels.com/cdn-cgi/image/width=1000px,fit=scale-down,f=auto,q=80/https://statics.myclickfunnels.com/workspace/JmNrPW/image/15857259/file/372f4bd1ee698cccb49b98789daefd39.png" alt="your lifestyle" style="max-width:620px">
+  <div class="copy">
+    <p>This is exactly why me and my partner decided to create this challenge.</p><p>To show that it's possible.</p>
+    <p><b>To make this accessible to ANYONE</b>, who is willing to take that first step to a life full of freedom.</p>
+    <p><b>So for a limited time only, you now have the chance to duplicate my entire system for yourself.</b></p>
+  </div>
+</div></section>
+
+<!-- ===== BLOCK 7 : THE CHALLENGE ===== -->
+<section class="alt"><div class="wrap">
+  <h2>Join Our 10 Day Challenge To Copy &amp; Paste This Exact System For Yourself!</h2>
+  <div class="copy aic-num">
+    <b>1. What we’ll be doing...</b><p>In our 10 Day Challenge we'll create your faceless Instagram account, let AI make your content and sell other people's digital products to earn commissions 📱</p><p>You can do this entirely on your own schedule from the comfort of your couch with just 10-20 minutes per day!</p>
+    <b>2. How you'll get paid</b><p>Once you get a sale, your commissions will be paid out to you via PayPal or Bank Transfer. 💰</p>
+    <b>3. Requirements</b><p>– Internet connection<br>– Smartphone (Android / iPhone 8 or newer)</p>
+  </div>
+  <div class="ctawrap"><a class="aic-cta" href="#checkout"><span class="aic-cta-main">GET ACCESS FOR JUST $6.95 &raquo;</span><span class="aic-cta-sub">1-ON-1 CHAT SUPPORT INCLUDED</span></a></div>
+  <h2 style="margin-top:50px">Here’s just a mere fraction of the gold you will discover inside!</h2>
+  <div class="aic-mods">
+    <div class="aic-mod"><div class="ic">📈</div><b>The $10K Strategy</b><p>I show you exactly how I went from $0 to $10K with the AI Creator System and how you can duplicate my strategy for yourself.</p></div>
+    <div class="aic-mod"><div class="ic">📱</div><b>The AI Creator Formula</b><p>We'll build your new faceless Instagram together to ensure you have the right foundation to be successful.</p></div>
+    <div class="aic-mod"><div class="ic">🤖</div><b>A.I. Creates Unlimited Content</b><p>While everyone else is "brainstorming", our AI writes the scripts, generates the videos and the voiceovers, done-for-you.</p></div>
+    <div class="aic-mod"><div class="ic">🛒</div><b>Picking Profitable Digital Products</b><p>We help you pick the best-selling digital product so you can resell it and make money without lifting a finger.</p></div>
+    <div class="aic-mod"><div class="ic">💬</div><b>Automated Sales-Chatbot</b><p>Our AI sales-chatbot automatically contacts all your followers and sends them the link to your new digital product.</p></div>
+    <div class="aic-mod"><div class="ic">🚀</div><b>Scale To $25K+/Month</b><p>You get the exclusive opportunity to work with us 1-on-1 to automate this whole process and scale to $25K+ in monthly income.</p></div>
+  </div>
+</div></section>
+
+<!-- ===== BLOCK 8 : RESULTS ===== -->
+<section><div class="wrap">
+  <h2>Join The 10 Day Challenge Today And Design The Life You Always Dreamed About!</h2>
+  <img class="full" src="https://images.clickfunnels.com/cdn-cgi/image/width=1000px,fit=scale-down,f=auto,q=80/https://statics.myclickfunnels.com/workspace/JmNrPW/image/12172263/file/b14c6d571aa745561dbceee007a1c43f.png" alt="results collage" style="max-width:720px">
+  <h2 style="font-size:clamp(22px,3vw,32px)">These are just some results from the people in our challenge...</h2>
+  <div class="aic-grid"><img src="https://images.clickfunnels.com/cdn-cgi/image/width=1000px,fit=scale-down,f=auto,q=80/https://statics.myclickfunnels.com/workspace/JmNrPW/image/18181289/file/5865f7b91827cdaf7000fd272d7b43c1.png" alt="student result" loading="lazy"><img src="https://images.clickfunnels.com/cdn-cgi/image/width=1000px,fit=scale-down,f=auto,q=80/https://statics.myclickfunnels.com/workspace/JmNrPW/image/18941864/file/b6d1dd78f983af6f794e8e990bc53363.jpg" alt="student result" loading="lazy"><img src="https://images.clickfunnels.com/cdn-cgi/image/width=1000px,fit=scale-down,f=auto,q=80/https://statics.myclickfunnels.com/workspace/JmNrPW/image/18581941/file/559d69058dd4bcc788a096dbde98852c.png" alt="student result" loading="lazy"><img src="https://images.clickfunnels.com/cdn-cgi/image/width=1000px,fit=scale-down,f=auto,q=80/https://statics.myclickfunnels.com/workspace/JmNrPW/image/15703314/file/a84c264578bb0c30761c0232af844a93.png" alt="student result" loading="lazy"><img src="https://images.clickfunnels.com/cdn-cgi/image/width=1000px,fit=scale-down,f=auto,q=80/https://statics.myclickfunnels.com/workspace/JmNrPW/image/18873799/file/b6f2388062cc8637025cba42d9cabf12.jpg" alt="student result" loading="lazy"><img src="https://images.clickfunnels.com/cdn-cgi/image/width=1000px,fit=scale-down,f=auto,q=80/https://statics.myclickfunnels.com/workspace/JmNrPW/image/18873761/file/a12eac50b6c08e69a3925f66294163a8.jpg" alt="student result" loading="lazy"><img src="https://images.clickfunnels.com/cdn-cgi/image/width=1000px,fit=scale-down,f=auto,q=80/https://statics.myclickfunnels.com/workspace/JmNrPW/image/15703566/file/500e47cacf482baae1169537933b74ac.png" alt="student result" loading="lazy"><img src="https://images.clickfunnels.com/cdn-cgi/image/width=1000px,fit=scale-down,f=auto,q=80/https://statics.myclickfunnels.com/workspace/JmNrPW/image/15977282/file/1e798f1eb51f16c0507632df88f9ff58.png" alt="student result" loading="lazy"><img src="https://images.clickfunnels.com/cdn-cgi/image/width=1000px,fit=scale-down,f=auto,q=80/https://statics.myclickfunnels.com/workspace/JmNrPW/image/18873953/file/32629e88aff654a3fe859416ce40afb7.jpg" alt="student result" loading="lazy"><img src="https://images.clickfunnels.com/cdn-cgi/image/width=1000px,fit=scale-down,f=auto,q=80/https://statics.myclickfunnels.com/workspace/JmNrPW/image/18874192/file/9e70cf61e7cc20868ccbc1691e7e9b94.jpg" alt="student result" loading="lazy"><img src="https://images.clickfunnels.com/cdn-cgi/image/width=1000px,fit=scale-down,f=auto,q=80/https://statics.myclickfunnels.com/workspace/JmNrPW/image/18874330/file/d907c74d9aa0bbfbcd0a15cf17055cd4.jpg" alt="student result" loading="lazy"><img src="https://images.clickfunnels.com/cdn-cgi/image/width=1000px,fit=scale-down,f=auto,q=80/https://statics.myclickfunnels.com/workspace/JmNrPW/image/18943266/file/4f1600759f87d7186241407024d60fd5.jpg" alt="student result" loading="lazy"></div>
+  <div class="ctawrap"><a class="aic-cta" href="#checkout"><span class="aic-cta-main">GET ACCESS FOR JUST $6.95 &raquo;</span><span class="aic-cta-sub">1-ON-1 CHAT SUPPORT INCLUDED</span></a></div>
+</div></section>
+
+<!-- ===== BLOCK 9 : GUARANTEE + OFFER ===== -->
+<section class="alt"><div class="wrap">
+  <h2>That's not all... Because we'll help you make your first sale 100% <span class="y"><u>guaranteed</u></span></h2>
+  <div class="aic-guar"><img src="https://images.clickfunnels.com/cdn-cgi/image/width=1000px,fit=scale-down,f=auto,q=80/https://statics.myclickfunnels.com/workspace/JmNrPW/image/15837243/file/08fe5c40581b9069e49544cc668307be.png" alt="100% guarantee">
+    <div><p>Yes, you will get everything we talked about…</p><p>How I set up &amp; sell digital products...</p><p>How AI makes my content while my phone goes “Ca-Ching” every couple of minutes…</p><p>How you can copy &amp; paste my entire business for yourself...</p><p><b>100% risk free.</b></p><p>Because we'll help you 1-on-1 until you make your first sale. This sale will be anywhere from $60-100.</p><p>You have nothing to lose. Get started today!</p></div>
+  </div>
+  <div class="copy">
+    <p><b>That's why we only take on 30 new participants at a time!</b></p>
+    <p>In simple terms: to ensure that everyone makes 10x the money they invested, we only take on 30 participants at a time.</p>
+    <p>If you're someone who wants to make more money NOW, secure your spot: click the button below and fill in your details on the checkout page you're about to see.</p>
+    <p>And keep in mind, this offer is available on this page only. If you try to purchase this offer anywhere else, maybe even on our website, you’ll be charged the full retail price of $197.</p>
+    <p>Now you can start for a one-time fee of only $6.95!</p>
+    <p>Remember, your purchase is backed by our 100% guarantee!</p>
+  </div>
+  <h2 style="margin-top:40px">Join Today And Get Our Starter Discount For <span class="pk"><u>95% OFF</u></span></h2>
+  <div class="aic-stack">
+    <ul>
+      <li>The 0 To $10K Strategy <b>($199 Value)</b></li>
+      <li>The AI Creator Formula <b>($399 Value)</b></li>
+      <li>A.I. Guide For Unlimited Content <b>($149 Value)</b></li>
+      <li>Picking Profitable Digital Products <b>($97 Value)</b></li>
+      <li>Automated Sales-Chatbot <b>($297 Value)</b></li>
+      <li>Paid Traffic Mastery <b>($199 Value)</b></li>
+    </ul>
+    <div class="tot"><span>Total Value:</span><span>$1,340.00</span></div>
+    <p class="reg">Regular Price: <s>$97</s></p>
+    <p class="now">Get Instant Access Today <span>Only $6.95!</span></p>
+    <p class="del">Delivered instantly. Start the setup in the next 5 minutes.</p>
+  </div>
+  <div class="ctawrap" id="checkout"><a class="aic-cta" href="#checkout"><span class="aic-cta-main">GET ACCESS FOR JUST $6.95 &raquo;</span><span class="aic-cta-sub">1-ON-1 CHAT SUPPORT INCLUDED</span></a></div>
+  <img src="https://images.clickfunnels.com/cdn-cgi/image/width=1000px,fit=scale-down,f=auto,q=80/https://statics.myclickfunnels.com/workspace/JmNrPW/image/4081110/file/8695cd5fcb744414225b4a40c78c0564.png" alt="secure payment" style="display:block;max-width:420px;width:100%;margin:16px auto 0">
+  <div class="aic-formslot">⬇ NATIVE CLICKFUNNELS CHECKOUT / OPT-IN FORM SITS HERE ⬇</div>
+</div></section>
+
+<!-- ===== BLOCK 10 : FAQ ===== -->
+<section><div class="wrap">
+  <h2>Still got questions? No problem!</h2>
+  <details class="aic-faq"><summary>How much time do I have to invest?</summary><p>The 10 Day Challenge is designed to help you even if you only have a couple of minutes per day. The AI does the heavy lifting.</p></details><details class="aic-faq"><summary>Do I need to film or edit anything?</summary><p>No. You never appear on camera and you never open an editing app. Our AI writes the script, creates the visuals and the voiceover. You post.</p></details><details class="aic-faq"><summary>Will I need to invest in lots of equipment?</summary><p>No. The only thing you need is a smartphone, an internet connection and this challenge to get started.</p></details><details class="aic-faq"><summary>Do I need experience with AI tools or online business?</summary><p>No. We set everything up from scratch together. You get the exact prompts, the exact content to post and the exact products to sell.</p></details><details class="aic-faq"><summary>How fast can I get started when I sign up?</summary><p>You can start executing 2 minutes after signing up. Everything is at your fingertips right from the get-go.</p></details><details class="aic-faq"><summary>I'm not sure what to sell! Should I still join?</summary><p>Yes! If you don't have a product yet we'll give you our products to resell. For every sale you make, you get about $50. Our goal is 10 sales per day.</p></details><details class="aic-faq"><summary>I don't have a big audience yet. Will this still work for me?</summary><p>You bet. Many of our members started with zero followers and used this process to get their first 5, 10 or even 15 sales in a few days.</p></details><details class="aic-faq"><summary>What's your 100% success guarantee?</summary><p>Simple: complete the whole challenge, post the AI content we give you, and if you haven't made your first sale we'll work with you 1-on-1 until you do.</p></details>
+</div></section>
+
+<!-- ===== BLOCK 11 : FOOTER ===== -->
+<div class="aic-foot"><div class="wrap">
+  All rights reserved - Faceless Funnel Academy LLC @2026 - 30N Gould Street, Sheridan, Wyoming, 82801, United States<br>
+  <a href="#">Privacy Policy</a> · <a href="#">Terms &amp; Conditions</a> · Contact: support@facelessfunnelacademy.com<br><br>
+  This site is not part of, or endorsed by, Facebook, Google, Snapchat, Twitter or any social media platform in any way. All product names, logos, and brands are property of their respective owners.<br>
+  *Earnings and income representations made by us and our advertisers/affiliates are aspirational statements only of your earnings potential. Results are not typical and depend on your effort, experience and market conditions.
+</div></div>
+
+</div></body></html>
